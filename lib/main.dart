@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:robot_frontend/pages/dashboard.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:robot_frontend/pages/SideMenu.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -28,8 +29,12 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'mainpagedefault',
-          theme: ThemeData(
-            primarySwatch: Colors.yellow,
+          theme: ThemeData.dark().copyWith(
+            scaffoldBackgroundColor: Colors.indigoAccent ,
+            textTheme: GoogleFonts.
+                poppinsTextTheme(Theme.of(context).textTheme)
+                .apply(bodyColor: Colors.yellow),
+            canvasColor: Colors.indigo,
           ),
           initialRoute: '/',
           onGenerateRoute: (routerSettings) {
@@ -37,8 +42,8 @@ class MyApp extends StatelessWidget {
               case '/':
                 return MaterialPageRoute(
                     builder: (_) => MyHomePage(title: "HelloDashboard"));
-              case '/DashBoard':
-                return MaterialPageRoute(builder: (_) => DashBoard());
+              case '/SideMenu':
+                return MaterialPageRoute(builder: (_) => SideMenu());
               default:
                 return MaterialPageRoute(
                     builder: (_) => MyHomePage(title: "error"));
@@ -69,10 +74,10 @@ class MyHomePage extends StatelessWidget {
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
             ),
-            Image.asset("assets/logo/logo.png", width: 1000.0, height: 500.0),
+            Image.asset("assets/logo/robot.png", width: 1000.0, height: 500.0),
             FloatingActionButton(
                 onPressed: () => {
-                      Navigator.pushNamed(context, '/DashBoard', arguments: {}),
+                      Navigator.pushNamed(context, '/SideMenu', arguments: {}),
                     },
                 tooltip: 'NextPage',
                 child: Icon(Icons.navigate_next))
