@@ -7,25 +7,13 @@ void main() {
   runApp(MyApp());
 }
 
-class mainProvider with ChangeNotifier {
-  double _width;
-  double _height;
-
-  mainProvider(this._height, this._width);
-
-  void onClick() {
-    _width = 400.0;
-    _height = 300.0;
-    notifyListeners();
-  }
-}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => mainProvider(0, 0))
+          ChangeNotifierProvider(create: (context) => SwitchProvider('default'))
         ],
         child: MaterialApp(
           title: 'mainpagedefault',

@@ -1,9 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:robot_frontend/pages/MainBoard.dart';
 
 class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SwitchProvider spProvider = Provider.of<SwitchProvider>(context);
     return Drawer(
       child: SingleChildScrollView(
         child: Column(
@@ -22,35 +25,35 @@ class Menu extends StatelessWidget {
                 style: TextStyle(color: Colors.white),
               ),
             ),
-            DrawerListTile(
-              title: "Dashboard",
-              press: () => {
-                // Navigator.pushNamed(context, '/dashboard', arguments: {}),
-              },
+            Consumer<SwitchProvider>(
+              builder: (context, spProvider, child) => DrawerListTile(
+                title: "DashBoard",
+                press: () => {spProvider.manageData("DashBoard")},
+              ),
             ),
-            DrawerListTile(
-              title: "Mqtt",
-              press: () => {
-                // Navigator.pushNamed(context, '/sensorboard', arguments: {}),
-              },
+            Consumer<SwitchProvider>(
+              builder: (context, spProvider, child) => DrawerListTile(
+                title: "Mqtt",
+                press: () => {spProvider.manageData("Sensor")},
+              ),
             ),
-            DrawerListTile(
-              title: "View Parsed Map",
-              press: () => {
-                //Navigator.pushNamed(context, '/parsedmap', arguments: {}),
-              },
+            Consumer<SwitchProvider>(
+              builder: (context, spProvider, child) => DrawerListTile(
+                title: "View Parsed Map",
+                press: () => {spProvider.manageData("ParsedMap")},
+              ),
             ),
-            DrawerListTile(
-              title: "History",
-              press: () => {
-                //Navigator.pushNamed(context, '/parsedmap', arguments: {}),
-              },
+            Consumer<SwitchProvider>(
+              builder: (context, spProvider, child) => DrawerListTile(
+                title: "History",
+                press: () => {spProvider.manageData("History")},
+              ),
             ),
-            DrawerListTile(
-              title: "Settings",
-              press: () => {
-                // Navigator.pushNamed(context, '/parsedmap', arguments: {}),
-              },
+            Consumer<SwitchProvider>(
+              builder: (context, spProvider, child) => DrawerListTile(
+                title: "Setting",
+                press: () => {spProvider.manageData("Settings")},
+              ),
             ),
           ],
         ),
