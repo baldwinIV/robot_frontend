@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:robot_frontend/pages/SideMenu.dart';
+import 'package:robot_frontend/pages/MainBoard.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -42,8 +42,8 @@ class MyApp extends StatelessWidget {
               case '/':
                 return MaterialPageRoute(
                     builder: (_) => MyHomePage(title: "HelloDashboard"));
-              case '/SideMenu':
-                return MaterialPageRoute(builder: (_) => SideMenu());
+              case '/MainBoard':
+                return MaterialPageRoute(builder: (_) => MainBoard());
               default:
                 return MaterialPageRoute(
                     builder: (_) => MyHomePage(title: "error"));
@@ -77,7 +77,7 @@ class MyHomePage extends StatelessWidget {
             Image.asset("assets/logo/robot.png", width: 1000.0, height: 500.0),
             FloatingActionButton(
                 onPressed: () => {
-                      Navigator.pushNamed(context, '/SideMenu', arguments: {}),
+                      Navigator.pushNamed(context, '/MainBoard', arguments: {}),
                     },
                 tooltip: 'NextPage',
                 child: Icon(Icons.navigate_next))
