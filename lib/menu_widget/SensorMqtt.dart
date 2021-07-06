@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mqtt_client/mqtt_browser_client.dart';
+import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -6,8 +8,9 @@ import 'dart:io';
 
 Future<MqttClient> connect() async {
   String topic = 'test';
-  MqttServerClient client =
-  MqttServerClient.withPort('61.83.204.205', 'flutter_client', 1883);
+  print("go go");
+  MqttBrowserClient client =
+      MqttBrowserClient.withPort('61.83.204.205', 'flutter_client', 1883);
   client.logging(on: true); //logging 허용
   client.onConnected = onConnected;
   client.onDisconnected = onDisconnected;
@@ -32,6 +35,7 @@ Future<MqttClient> connect() async {
     print('Exception: $e');
     client.disconnect();
   }
+  print('Success');
   return client;
 }
 
@@ -69,15 +73,22 @@ class SensorMqtt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xFF1D4E89),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Row Alignment"),
-          ElevatedButton(onPressed: () => {mqttTongSin(1)}, child: Text("Connect")),
-          ElevatedButton(onPressed: () => {mqttTongSin(1)}, child: Text("SubScribe")),
-          ElevatedButton(onPressed: () => {mqttTongSin(1)}, child: Text("Publish"))
-        ],
+      child: SafeArea(
+        child: Expanded(
+          flex: 1,
+          child: Column(
+            children: [
+              TextField(decoration: InputDecoration(hintText: "Ip주소")),
+              TextField(decoration: InputDecoration(hintText: "포트번호")),
+              ElevatedButton(
+                  onPressed: () {
+                    connect();
+                  },
+                  child: Text("Connect")),
+              Text("~~~~~~~~~"),
+            ],
+          ),
+        ),
       ),
     );
   }
