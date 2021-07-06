@@ -18,11 +18,11 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'mainpagedefault',
           theme: ThemeData.dark().copyWith(
-            scaffoldBackgroundColor: Colors.indigoAccent ,
+            scaffoldBackgroundColor: Colors.indigo,
             textTheme: GoogleFonts.
                 poppinsTextTheme(Theme.of(context).textTheme)
-                .apply(bodyColor: Colors.yellow),
-            canvasColor: Colors.indigo,
+                .apply(bodyColor: Colors.redAccent),
+            canvasColor: Colors.deepPurple,
           ),
           initialRoute: '/',
           onGenerateRoute: (routerSettings) {
