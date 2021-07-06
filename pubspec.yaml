@@ -27,6 +27,8 @@ dependencies:
   http: ^0.13.0
   fl_chart: ^0.36.1
   google_fonts: ^2.0.0
+  mqtt_client: ^9.3.2
+  crypto: ^3.0.1
 
 
   # The following adds the Cupertino Icons font to your application.
