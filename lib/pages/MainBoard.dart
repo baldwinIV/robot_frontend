@@ -20,17 +20,17 @@ class MainBoard extends StatelessWidget {
   Widget getWidget(String widgetName) {
     switch (widgetName) {
       case "DashBoard":
-        return Text("DashBoard");
+        return Text("DashBoard",style: TextStyle(fontSize: 30),);
       case "Sensor":
         return SensorMqtt(title: "Hello");
       case "ParsedMap":
-        return Text("ParsedMap");
+        return Text("ParsedMap",style: TextStyle(fontSize: 30),);
       case "History":
-        return Text("History");
+        return Text("History",style: TextStyle(fontSize: 30),);
       case "Settings":
-        return Text("Settings");
+        return Text("Settings",style: TextStyle(fontSize: 30),);
       default:
-        return Text("default");
+        return Text("default",style: TextStyle(fontSize: 30),);
     }
   }
 
