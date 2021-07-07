@@ -3,14 +3,12 @@ import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_server_client.dart';
-import 'dart:io';
 
-Future<MqttClient> connect() async {
-  String topic = 'test';
-  print("go go");
+Future<MqttBrowserClient> connect() async {
+  String topic = '/Hello';
+  print("before connected");
   MqttBrowserClient client =
-      MqttBrowserClient.withPort('61.83.204.205', 'flutter_client', 1883);
+  MqttBrowserClient.withPort('ws://61.83.204.205', 'flutter_client', 8080);
   client.logging(on: true); //logging 허용
   client.onConnected = onConnected;
   client.onDisconnected = onDisconnected;
@@ -24,7 +22,7 @@ Future<MqttClient> connect() async {
   //will 유언
   final connMess = MqttConnectMessage()
       .withWillTopic(topic)
-      .withWillMessage('connect asdf')
+      .withWillMessage('death')
       .startClean()
       .withWillQos(MqttQos.atLeastOnce);
   client.connectionMessage = connMess;
@@ -34,8 +32,20 @@ Future<MqttClient> connect() async {
   } catch (e) {
     print('Exception: $e');
     client.disconnect();
-  }
-  print('Success');
+  }// Not a wildcard topic
+  client.subscribe(topic, MqttQos.atMostOnce);
+  client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+    final recMess = c![0].payload as MqttPublishMessage;
+    final pt =
+    MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+    print(
+        'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
+    print('');
+  });
+  client.published!.listen((MqttPublishMessage message) {
+    print(
+        'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
+  });
   return client;
 }
 
@@ -60,14 +70,16 @@ void pong() {
 }
 
 class SensorMqtt extends StatelessWidget {
-  const SensorMqtt({
+  SensorMqtt({
     Key? key,
     required this.title,
   }) : super(key: key);
   final String title;
-
-  int mqttTongSin(int a) {
-    return a + 1;
+  MqttBrowserClient? client;
+  void _publish(String message) {
+    final builder = MqttClientPayloadBuilder();
+    builder.addUTF8String('Hello from flutter_client');
+    client?.publishMessage("/Hello", MqttQos.atLeastOnce, builder.payload!);
   }
 
   @override
@@ -82,10 +94,23 @@ class SensorMqtt extends StatelessWidget {
               TextField(decoration: InputDecoration(hintText: "포트번호")),
               ElevatedButton(
                   onPressed: () {
-                    connect();
+                    connect().then((clientReturned) {
+                      client = clientReturned;
+                      print("Hello");
+                    }, onError: (e) {
+                      //print(e);
+                    });
                   },
                   child: Text("Connect")),
-              Text("~~~~~~~~~"),
+              ElevatedButton(
+                child: Text('Publish to 61.83.204.205 -t /test'),
+                onPressed: () => {this._publish('Hello')},
+              ),
+
+              ElevatedButton(
+                child: Text('Disconnect'),
+                onPressed: () => {client?.disconnect()},
+              ),
             ],
           ),
         ),
