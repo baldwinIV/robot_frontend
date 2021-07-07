@@ -8,7 +8,7 @@ Future<MqttBrowserClient> connect() async {
   String topic = '/Hello';
   print("before connected");
   MqttBrowserClient client =
-  MqttBrowserClient.withPort('ws://61.83.204.205', 'flutter_client', 8080);
+      MqttBrowserClient.withPort('ws://61.83.204.205', 'flutter_client', 8080);
   client.logging(on: true); //logging 허용
   client.onConnected = onConnected;
   client.onDisconnected = onDisconnected;
@@ -32,12 +32,12 @@ Future<MqttBrowserClient> connect() async {
   } catch (e) {
     print('Exception: $e');
     client.disconnect();
-  }// Not a wildcard topic
+  } // Not a wildcard topic
   client.subscribe(topic, MqttQos.atMostOnce);
   client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
     final recMess = c![0].payload as MqttPublishMessage;
     final pt =
-    MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+        MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
     print(
         'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
     print('');
@@ -76,6 +76,7 @@ class SensorMqtt extends StatelessWidget {
   }) : super(key: key);
   final String title;
   MqttBrowserClient? client;
+
   void _publish(String message) {
     final builder = MqttClientPayloadBuilder();
     builder.addUTF8String('Hello from flutter_client');
@@ -86,33 +87,37 @@ class SensorMqtt extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: SafeArea(
-        child: Expanded(
-          flex: 1,
-          child: Column(
-            children: [
-              TextField(decoration: InputDecoration(hintText: "Ip주소")),
-              TextField(decoration: InputDecoration(hintText: "포트번호")),
-              ElevatedButton(
-                  onPressed: () {
-                    connect().then((clientReturned) {
-                      client = clientReturned;
-                      print("Hello");
-                    }, onError: (e) {
-                      //print(e);
-                    });
-                  },
-                  child: Text("Connect")),
-              ElevatedButton(
-                child: Text('Publish to 61.83.204.205 -t /test'),
-                onPressed: () => {this._publish('Hello')},
-              ),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Column(
+                children: [
+                  TextField(decoration: InputDecoration(hintText: "Ip주소")),
+                  TextField(decoration: InputDecoration(hintText: "포트번호")),
+                  ElevatedButton(
+                      onPressed: () {
+                        connect().then((clientReturned) {
+                          client = clientReturned;
+                          print("Hello");
+                        }, onError: (e) {
+                          //print(e);
+                        });
+                      },
+                      child: Text("Connect")),
+                  ElevatedButton(
+                    child: Text('Publish to 61.83.204.205 -t /test'),
+                    onPressed: () => {this._publish('Hello')},
+                  ),
 
-              ElevatedButton(
-                child: Text('Disconnect'),
-                onPressed: () => {client?.disconnect()},
+                  ElevatedButton(
+                    child: Text('Disconnect'),
+                    onPressed: () => {client?.disconnect()},
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
