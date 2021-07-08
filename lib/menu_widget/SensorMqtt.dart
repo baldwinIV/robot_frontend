@@ -1,15 +1,16 @@
+import 'dart:js';
+
 import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:mqtt_client/mqtt_client.dart';
 
-Future<MqttBrowserClient> connect() async {
-  String topic = '/Hello';
-  print("before connected");
-  MqttBrowserClient client =
-      MqttBrowserClient.withPort('ws://61.83.204.205', 'flutter_client', 8080);
-  client.logging(on: true); //logging 허용
+Future<MqttBrowserClient> connect(String topic) async {
+  print("before connected topic? $topic");
+  MqttBrowserClient client = MqttBrowserClient.withPort(
+      'ws://test.mosquitto.org', 'flutter_client', 8080);
+  client.logging(on: false);
   client.onConnected = onConnected;
   client.onDisconnected = onDisconnected;
   client.keepAlivePeriod = 20;
@@ -28,12 +29,13 @@ Future<MqttBrowserClient> connect() async {
   client.connectionMessage = connMess;
   try {
     print('Connecting');
-    await client.connect();
+    //await client.connect();
+    await client.connect("sherofirstprize", "\$\$ManyMany100");
   } catch (e) {
     print('Exception: $e');
     client.disconnect();
   } // Not a wildcard topic
-  client.subscribe(topic, MqttQos.atMostOnce);
+  //client.subscribe(topic, MqttQos.atLeastOnce);
   client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
     final recMess = c![0].payload as MqttPublishMessage;
     final pt =
@@ -47,6 +49,106 @@ Future<MqttBrowserClient> connect() async {
         'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
   });
   return client;
+}
+
+class MqttProvider with ChangeNotifier {
+  MqttBrowserClient? _mqttClient;
+  String _topic;
+
+  String getTopic() => _topic;
+
+  MqttBrowserClient? getMqttClient() => _mqttClient;
+
+  MqttProvider(this._topic); //default = /test
+
+  void manageTopic(String topic) {
+    _topic = topic;
+    notifyListeners();
+  }
+
+  void manageMqttClient(MqttBrowserClient mqttClient) {
+    _mqttClient = mqttClient;
+    notifyListeners();
+  }
+}
+
+class SensorMqtt extends StatelessWidget {
+  SensorMqtt({
+    Key? key,
+    required this.title,
+  }) : super(key: key);
+  final String title;
+
+  void _publish(String message, MqttBrowserClient? _client) {
+    print("pub 버튼 클릭");
+    final builder = MqttClientPayloadBuilder();
+    builder.addUTF8String('Hello from flutter_client');
+    _client!.publishMessage(message, MqttQos.atLeastOnce, builder.payload!);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: SafeArea(
+        child: Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Column(
+                children: [
+                  TextField(
+                      decoration: InputDecoration(
+                          labelText: "HostName (e.g. ws://test.mosquitto.org)")),
+                  TextField(decoration: InputDecoration(labelText: "portnum")),
+                  Consumer<MqttProvider>(
+                    builder: (context, mqttProvider, child) => ElevatedButton(
+                        onPressed: () {
+                          connect(mqttProvider._topic).then((clientReturned) {
+                            mqttProvider.manageMqttClient(clientReturned);
+                          }, onError: (e) {
+                            print(e);
+                          });
+                        },
+                        child: Text("Connect")),
+                  ),
+                  Consumer<MqttProvider>(
+                    builder: (context, mqttProvider, child) => ElevatedButton(
+                      child: Text('Publish message'),
+                      onPressed: () => {
+                        this._publish('Hello World!', mqttProvider.getMqttClient()),
+                        print("pub to ${mqttProvider.getTopic()} topic")
+                      },
+                    ),
+                  ),
+                  Consumer<MqttProvider>(
+                    builder: (context, mqttProvider, child) => ElevatedButton(
+                      child: Text('Subscribe Topic'),
+                      onPressed: () => {
+                        mqttProvider
+                            .getMqttClient()!
+                            .subscribe(mqttProvider.getTopic(), MqttQos.atLeastOnce),
+                        print("${mqttProvider.getTopic()} is subed")
+                      },
+                    ),
+                  ),
+                  Consumer<MqttProvider>(
+                    builder: (context, mqttProvider, child) => ElevatedButton(
+                      child: Text('Disconnect'),
+                      onPressed: () =>
+                          {mqttProvider.getMqttClient()!.disconnect()},
+                    ),
+                  ),
+                  Consumer<MqttProvider>(
+                    builder: (context, mqttProvider, child) => Text(mqttProvider.getTopic()),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 void onConnected() {
@@ -67,59 +169,4 @@ void onSubscribeFail(String topic) {
 
 void pong() {
   print('Ping response client callback invoked');
-}
-
-class SensorMqtt extends StatelessWidget {
-  SensorMqtt({
-    Key? key,
-    required this.title,
-  }) : super(key: key);
-  final String title;
-  MqttBrowserClient? client;
-
-  void _publish(String message) {
-    final builder = MqttClientPayloadBuilder();
-    builder.addUTF8String('Hello from flutter_client');
-    client?.publishMessage("/Hello", MqttQos.atLeastOnce, builder.payload!);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: SafeArea(
-        child: Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Column(
-                children: [
-                  TextField(decoration: InputDecoration(hintText: "Ip주소")),
-                  TextField(decoration: InputDecoration(hintText: "포트번호")),
-                  ElevatedButton(
-                      onPressed: () {
-                        connect().then((clientReturned) {
-                          client = clientReturned;
-                          print("Hello");
-                        }, onError: (e) {
-                          //print(e);
-                        });
-                      },
-                      child: Text("Connect")),
-                  ElevatedButton(
-                    child: Text('Publish to 61.83.204.205 -t /test'),
-                    onPressed: () => {this._publish('Hello')},
-                  ),
-
-                  ElevatedButton(
-                    child: Text('Disconnect'),
-                    onPressed: () => {client?.disconnect()},
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

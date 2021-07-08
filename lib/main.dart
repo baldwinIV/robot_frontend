@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:robot_frontend/pages/MainBoard.dart';
+import 'package:robot_frontend/menu_widget/SensorMqtt.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -13,7 +14,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => SwitchProvider('default'))
+          ChangeNotifierProvider(create: (context) => SwitchProvider('default')),
+          ChangeNotifierProvider(create: (context) => MqttProvider('/test'))
         ],
         child: MaterialApp(
           title: 'mainpagedefault',

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:robot_frontend/menu_widget/SensorMqtt.dart';
+import 'package:robot_frontend/menu_widget/Dashboard.dart';
 import 'package:robot_frontend/Menu.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +21,7 @@ class MainBoard extends StatelessWidget {
   Widget getWidget(String widgetName) {
     switch (widgetName) {
       case "DashBoard":
-        return Text("DashBoard",style: TextStyle(fontSize: 30),);
+        return Dashboard();
       case "Sensor":
         return SensorMqtt(title: "Hello");
       case "ParsedMap":
@@ -33,7 +34,6 @@ class MainBoard extends StatelessWidget {
         return Text("default",style: TextStyle(fontSize: 30),);
     }
   }
-
   @override
   Widget build(BuildContext context) {
     SwitchProvider spProvider = Provider.of<SwitchProvider>(context);
