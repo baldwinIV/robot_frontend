@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:robot_frontend/pages/MainBoard.dart';
+import 'package:robot_frontend/providers/SwitchProvider.dart';
 
 class Menu extends StatelessWidget {
   @override

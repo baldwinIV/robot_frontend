@@ -3,19 +3,7 @@ import 'package:robot_frontend/menu_widget/SensorMqtt.dart';
 import 'package:robot_frontend/menu_widget/Dashboard.dart';
 import 'package:robot_frontend/Menu.dart';
 import 'package:provider/provider.dart';
-
-class SwitchProvider with ChangeNotifier {
-  String _routeName = "default";
-
-  String getRouteName() => _routeName;
-
-  SwitchProvider(this._routeName);
-
-  void manageData(String toChangeRoute) {
-    _routeName = toChangeRoute;
-    notifyListeners();
-  }
-}
+import 'package:robot_frontend/providers/SwitchProvider.dart';
 
 class MainBoard extends StatelessWidget {
   Widget getWidget(String widgetName) {
@@ -36,7 +24,6 @@ class MainBoard extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-    SwitchProvider spProvider = Provider.of<SwitchProvider>(context);
     return Scaffold(
       body: SafeArea(
           child: Row(

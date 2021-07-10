@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:robot_frontend/pages/MainBoard.dart';
-import 'package:robot_frontend/menu_widget/SensorMqtt.dart';
 import 'package:provider/provider.dart';
+import 'package:robot_frontend/providers/MqttProvider.dart';
+import 'package:robot_frontend/providers/SwitchProvider.dart';
 
 void main() {
   runApp(MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => SwitchProvider('default')),
+          ChangeNotifierProvider(
+              create: (context) => SwitchProvider('default')),
           ChangeNotifierProvider(create: (context) => MqttProvider('/test'))
         ],
         child: MaterialApp(
           title: 'mainpagedefault',
           theme: ThemeData.dark().copyWith(
             scaffoldBackgroundColor: Colors.indigo,
-            textTheme: GoogleFonts.
-                poppinsTextTheme(Theme.of(context).textTheme)
+            textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
                 .apply(bodyColor: Colors.redAccent),
             canvasColor: Colors.deepPurple,
           ),
