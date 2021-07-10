@@ -64,7 +64,7 @@ class MyHomePage extends StatelessWidget {
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
             ),
-            Image.asset("assets/logo/robot.png", width: 1000.0, height: 500.0),
+            Image.asset("assets/logo/Mainpage_logo.png", width: 1000.0, height: 500.0),
             FloatingActionButton(
                 onPressed: () => {
                       Navigator.pushNamed(context, '/MainBoard', arguments: {}),
