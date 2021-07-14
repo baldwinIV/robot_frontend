@@ -6,7 +6,7 @@ class MqttProvider with ChangeNotifier {
   MqttBrowserClient? _mqttClient;
   String _topic;
   String _mqttHostName = "ws://test.mosquitto.org";
-  String _mqttPort = "8000";
+  String _mqttPort = "8080";
   var hostController = TextEditingController();
   var portController = TextEditingController();
   var topicController = TextEditingController();
@@ -20,12 +20,17 @@ class MqttProvider with ChangeNotifier {
   String getMqttPort() => _mqttPort;
 
   TextEditingController getHostController() => hostController;
-
   TextEditingController getPortController() => portController;
 
   TextEditingController getTopicController() => topicController;
 
-  MqttProvider(this._topic); //default = /test
+  MqttProvider(this._topic){
+    hostController.text = "None";
+    portController.text = "None";
+    topicController.text = "None";
+
+    print("asd");
+  } //default = /test
 
   void manageTopic(String topic) {
     _topic = topic;
