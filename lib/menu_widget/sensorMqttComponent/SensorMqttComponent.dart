@@ -5,6 +5,7 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:robot_frontend/menu_widget/SensorMqtt.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:robot_frontend/providers/MqttProvider.dart';
+
 class InputClasses extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,8 @@ class InputClasses extends StatelessWidget {
             decoration: InputDecoration(
                 labelText: "HostName (e.g. ws://test.mosquitto.org)"),
             controller: aa.getHostController(),
-            onSubmitted: (text) =>{aa.manageHostController(aa.getHostController(),text)},
+            onSubmitted: (text) =>
+                {aa.manageHostController(aa.getHostController(), text)},
           ),
         ),
         SizedBox(
@@ -28,7 +30,8 @@ class InputClasses extends StatelessWidget {
           child: TextField(
             decoration: InputDecoration(labelText: "portnum"),
             controller: aa.getPortController(),
-            onSubmitted: (text) =>{aa.managePortController(aa.getPortController(),text)},
+            onSubmitted: (text) =>
+                {aa.managePortController(aa.getPortController(), text)},
           ),
         ),
         SizedBox(
@@ -37,7 +40,8 @@ class InputClasses extends StatelessWidget {
             decoration:
                 InputDecoration(labelText: "topic to subscribe or publish"),
             controller: aa.getTopicController(),
-            onSubmitted: (text) =>{aa.manageTopicController(aa.getTopicController(),text)},
+            onSubmitted: (text) =>
+                {aa.manageTopicController(aa.getTopicController(), text)},
           ),
         ),
       ],
@@ -52,6 +56,37 @@ void _publish(String message, MqttBrowserClient? _client) {
   _client!.publishMessage(message, MqttQos.atLeastOnce, builder.payload!);
 }
 
+class LogList extends StatelessWidget {
+  static const String _title = "Static ListView Example";
+  static const List<String> _data = [
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+  ];
+  Widget _buildLogList() {
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemCount: _data.length,
+      itemBuilder: (BuildContext _ctx, int i) {
+        return ListTile(
+            title: Text(
+          _data[i],
+          style: TextStyle(fontSize: 20),
+        ));
+      },
+    );
+  }
+  @override
+  Widget build(BuildContext context) {
+    return _buildLogList();
+  }
+}
+
 class Buttons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -60,7 +95,9 @@ class Buttons extends StatelessWidget {
         Consumer<MqttProvider>(
           builder: (context, mqttProvider, child) => ElevatedButton(
               onPressed: () {
-                connect(mqttProvider.getTopic()).then((clientReturned) {
+                connect(mqttProvider.getTopic(), mqttProvider.getMqttHostName(),
+                        mqttProvider.getMqttPort())
+                    .then((clientReturned) {
                   mqttProvider.manageMqttClient(clientReturned);
                 }, onError: (e) {
                   print(e);
@@ -99,8 +136,7 @@ class Buttons extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       child: Text('CH'),
-                      onPressed: () =>
-                          {print(mqttProvider.getTopic())},
+                      onPressed: () => {print(mqttProvider.getTopic())},
                     ),
                     Text(mqttProvider.getTopicController().text),
                     Text(mqttProvider.getHostController().text),

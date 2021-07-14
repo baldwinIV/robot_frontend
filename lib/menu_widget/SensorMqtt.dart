@@ -4,10 +4,10 @@ import 'dart:async';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:robot_frontend/menu_widget/sensorMqttComponent/SensorMqttComponent.dart';
 
-Future<MqttBrowserClient> connect(String topic) async {
+Future<MqttBrowserClient> connect(String topic,String host, String port) async {
   print("before connected topic? $topic");
   MqttBrowserClient client = MqttBrowserClient.withPort(
-      'ws://test.mosquitto.org', 'flutter_client', 8080);
+      host, 'flutter_client', int.parse(port));
   client.logging(on: false);
   client.onConnected = onConnected;
   client.onDisconnected = onDisconnected;
@@ -49,7 +49,6 @@ Future<MqttBrowserClient> connect(String topic) async {
   return client;
 }
 
-
 class SensorMqtt extends StatelessWidget {
   SensorMqtt({
     Key? key,
@@ -60,24 +59,22 @@ class SensorMqtt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: Alignment.center,
       child: SafeArea(
         child: Row(
+          //mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(
-              flex: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    child: InputClasses(),
-                    padding: EdgeInsets.fromLTRB(100, 0, 0, 0),
-                  ),
-                  Container(
-                    child: Buttons(),
-                    padding: EdgeInsets.fromLTRB(100, 0, 0, 0),
-                  ),
-                ],
-              ),
+            Container(
+              child: InputClasses(),
+              padding: EdgeInsets.fromLTRB(100, 0, 0, 0),
+            ),
+            Container(
+              child: Buttons(),
+              padding: EdgeInsets.fromLTRB(100, 0, 0, 0),
+            ),
+            Container(
+              child: SizedBox(child: LogList(),width: 100, height: 500,),
+              padding: EdgeInsets.fromLTRB(100, 0, 0, 0),
             ),
           ],
         ),
