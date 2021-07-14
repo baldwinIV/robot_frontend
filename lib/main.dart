@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
                 .apply(bodyColor: Colors.redAccent),
             canvasColor: Colors.deepPurple,
           ),
-          initialRoute: '/',
+          initialRoute: '/MainBoard',
           onGenerateRoute: (routerSettings) {
             switch (routerSettings.name) {
               case '/':
