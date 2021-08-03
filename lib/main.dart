@@ -4,6 +4,7 @@ import 'package:robot_frontend/pages/MainBoard.dart';
 import 'package:provider/provider.dart';
 import 'package:robot_frontend/providers/MqttProvider.dart';
 import 'package:robot_frontend/providers/SwitchProvider.dart';
+import 'package:robot_frontend/providers/LogProvider.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,15 +17,16 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(
               create: (context) => SwitchProvider('default')),
-          ChangeNotifierProvider(create: (context) => MqttProvider('/test'))
+          ChangeNotifierProvider(create: (context) => MqttProvider('/test')),
+          ChangeNotifierProvider(create: (context) => LogProvider())
         ],
         child: MaterialApp(
           title: 'mainpagedefault',
           theme: ThemeData.dark().copyWith(
-            scaffoldBackgroundColor: Colors.indigo,
+            scaffoldBackgroundColor: Color(0xff282C34),
             textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
-                .apply(bodyColor: Colors.redAccent),
-            canvasColor: Colors.deepPurple,
+                .apply(bodyColor: Colors.white),
+            canvasColor: Color(0xff21252B),
           ),
           initialRoute: '/MainBoard',
           onGenerateRoute: (routerSettings) {

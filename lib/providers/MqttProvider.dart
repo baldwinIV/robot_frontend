@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mqtt_client/mqtt_browser_client.dart';
-
+import 'dart:collection';
 
 class MqttProvider with ChangeNotifier {
   MqttBrowserClient? _mqttClient;
@@ -10,6 +10,11 @@ class MqttProvider with ChangeNotifier {
   var hostController = TextEditingController();
   var portController = TextEditingController();
   var topicController = TextEditingController();
+  Queue<String> _data = Queue<String>();
+
+  int getLength() => _data.length;
+
+  Queue<String> getData() => _data;
 
   MqttBrowserClient? getMqttClient() => _mqttClient;
 
@@ -20,17 +25,24 @@ class MqttProvider with ChangeNotifier {
   String getMqttPort() => _mqttPort;
 
   TextEditingController getHostController() => hostController;
+
   TextEditingController getPortController() => portController;
 
   TextEditingController getTopicController() => topicController;
 
-  MqttProvider(this._topic){
+  MqttProvider(this._topic) {
     hostController.text = "None";
     portController.text = "None";
     topicController.text = "None";
-
     print("asd");
   } //default = /test
+  void addStringToQueue(String toAdd) {
+    if (_data.length >= 10) {
+      _data.removeFirst();
+    }
+    _data.addLast(toAdd);
+    notifyListeners(); //must be inserted
+  }
 
   void manageTopic(String topic) {
     _topic = topic;
@@ -68,5 +80,4 @@ class MqttProvider with ChangeNotifier {
     _topic = a;
     notifyListeners();
   }
-
 }

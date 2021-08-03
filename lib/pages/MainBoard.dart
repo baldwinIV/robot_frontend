@@ -56,7 +56,7 @@ class MainBoard extends StatelessWidget {
                   MainBoardHeader(),
                   Expanded(
                     flex: 2,
-                    child: Text("a"),
+                    child: Text("MainBoard.dart"),
                   ),
                   Expanded(
                     flex: 4,

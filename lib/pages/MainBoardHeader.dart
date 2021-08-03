@@ -12,16 +12,16 @@ class MainBoardHeader extends StatelessWidget {
       child: Consumer<MqttProvider>(
           builder: (context, mqttProvider, child) => Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFF00FF00),
+                  color: const Color(0xFF323844),
                   border: Border.all(
-                    color: Colors.black,
+                    color: Color(0xff282C34),
                     width: 1.0,
                   ),
                 ),
                 child: Row(
                   children: [
                     Text(
-                      "DASHBOARD",
+                      "DASHBOARD  ",
                       style: Theme.of(context).textTheme.headline3,
                     ),
                     Text(mqttProvider.getTopic() + "   "),

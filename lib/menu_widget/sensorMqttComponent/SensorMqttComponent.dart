@@ -1,9 +1,10 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'package:provider/provider.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:robot_frontend/menu_widget/SensorMqtt.dart';
-import 'package:mqtt_client/mqtt_client.dart';
 import 'package:robot_frontend/providers/MqttProvider.dart';
 
 class InputClasses extends StatelessWidget {
@@ -57,29 +58,20 @@ void _publish(String message, MqttBrowserClient? _client) {
 }
 
 class LogList extends StatelessWidget {
-  static const String _title = "Static ListView Example";
-  static const List<String> _data = [
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-  ];
   Widget _buildLogList() {
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      itemCount: _data.length,
-      itemBuilder: (BuildContext _ctx, int i) {
-        return ListTile(
-            title: Text(
-          _data[i],
-          style: TextStyle(fontSize: 20),
-        ));
-      },
-    );
+    return Consumer<MqttProvider>(
+        builder: (context, lp, child) => ListView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: lp.getLength(),
+              itemBuilder: (BuildContext _ctx, int i) {
+                return ListTile(
+                    title: Text(
+                  lp.getData().elementAt(i),
+                  style: TextStyle(fontSize: 15),
+                ));
+              },
+            ));
   }
   @override
   Widget build(BuildContext context) {
@@ -95,13 +87,15 @@ class Buttons extends StatelessWidget {
         Consumer<MqttProvider>(
           builder: (context, mqttProvider, child) => ElevatedButton(
               onPressed: () {
-                connect(mqttProvider.getTopic(), mqttProvider.getMqttHostName(),
-                        mqttProvider.getMqttPort())
+                mqttProvider.addStringToQueue("Waits for Connected...");
+                SensorMqtt.connect(mqttProvider.getTopic(), mqttProvider.getMqttHostName(),
+                        mqttProvider.getMqttPort(),context)
                     .then((clientReturned) {
                   mqttProvider.manageMqttClient(clientReturned);
                 }, onError: (e) {
-                  print(e);
+                  mqttProvider.addStringToQueue("error");
                 });
+                mqttProvider.addStringToQueue("Successfully Connected");
               },
               child: Text("Connect")),
         ),
@@ -110,7 +104,7 @@ class Buttons extends StatelessWidget {
             child: Text('Publish message'),
             onPressed: () => {
               _publish('Hello World!', mqttProvider.getMqttClient()),
-              print("pub to ${mqttProvider.getTopic()} topic")
+              mqttProvider.addStringToQueue("pub to ${mqttProvider.getTopic()} topic"),
             },
           ),
         ),
@@ -121,14 +115,15 @@ class Buttons extends StatelessWidget {
               mqttProvider
                   .getMqttClient()!
                   .subscribe(mqttProvider.getTopic(), MqttQos.atLeastOnce),
-              print("${mqttProvider.getTopic()} is subed")
+              mqttProvider.addStringToQueue("${mqttProvider.getTopic()} is subed"),
             },
           ),
         ),
         Consumer<MqttProvider>(
           builder: (context, mqttProvider, child) => ElevatedButton(
             child: Text('Disconnect'),
-            onPressed: () => {mqttProvider.getMqttClient()!.disconnect()},
+            onPressed: () => {mqttProvider.getMqttClient()!.disconnect(),
+              mqttProvider.addStringToQueue("Disconnected"),},
           ),
         ),
         Consumer<MqttProvider>(
