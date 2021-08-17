@@ -55,11 +55,7 @@ class MainBoard extends StatelessWidget {
                 children: [
                   MainBoardHeader(),
                   Expanded(
-                    flex: 2,
-                    child: Text("MainBoard.dart"),
-                  ),
-                  Expanded(
-                    flex: 4,
+                    flex: 1,
                     child: getWidget(spProvider.getRouteName()),
                   ),
                 ],
