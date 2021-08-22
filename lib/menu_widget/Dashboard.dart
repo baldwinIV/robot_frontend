@@ -11,9 +11,12 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xff282C34),
-      body: body(context),
+    return Expanded(
+      flex: 1,
+      child: Scaffold(
+        backgroundColor: Color(0xff282C34),
+        body: body(context),
+      ),
     );
   }
 

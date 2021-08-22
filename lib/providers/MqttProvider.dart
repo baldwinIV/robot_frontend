@@ -37,7 +37,7 @@ class MqttProvider with ChangeNotifier {
     print("asd");
   } //default = /test
   void addStringToQueue(String toAdd) {
-    if (_data.length >= 10) {
+    if (_data.length >= 100) {
       _data.removeFirst();
     }
     _data.addLast(toAdd);

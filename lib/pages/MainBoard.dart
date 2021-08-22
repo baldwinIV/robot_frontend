@@ -52,14 +52,14 @@ class MainBoard extends StatelessWidget {
             flex: 5,
             child: Consumer<SwitchProvider>(
               builder: (context, spProvider, child) => Column(
+                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   MainBoardHeader(),
-                  Expanded(
-                    flex: 1,
-                    child: getWidget(spProvider.getRouteName()),
-                  ),
+                Container(
+                  child: getWidget(spProvider.getRouteName()),
+                ),
                 ],
-                crossAxisAlignment: CrossAxisAlignment.start,
+
               ),
             ),
           )

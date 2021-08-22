@@ -50,11 +50,11 @@ class InputClasses extends StatelessWidget {
   }
 }
 
-void _publish(String message, MqttBrowserClient? _client) {
-  print("pub 버튼 클릭");
+void _publish(String topic, MqttBrowserClient? _client, MqttProvider mqttProvider) {
   final builder = MqttClientPayloadBuilder();
   builder.addUTF8String('Hello from flutter_client');
-  _client!.publishMessage(message, MqttQos.atLeastOnce, builder.payload!);
+  _client!.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
+  mqttProvider.addStringToQueue("topic:" + topic + " pubbed : " + 'Hello from flutter_client');
 }
 
 class LogList extends StatelessWidget {
@@ -65,11 +65,19 @@ class LogList extends StatelessWidget {
               shrinkWrap: true,
               itemCount: lp.getLength(),
               itemBuilder: (BuildContext _ctx, int i) {
-                return ListTile(
-                    title: Text(
-                  lp.getData().elementAt(i),
-                  style: TextStyle(fontSize: 15),
-                ));
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: Color(0xff989898),
+                    ),
+                  ),
+                  child: ListTile(
+                      title: Text(
+                    lp.getData().elementAt(i),
+                    style: TextStyle(fontSize: 15),
+                  )),
+                );
               },
             ));
   }
@@ -83,19 +91,19 @@ class Buttons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Consumer<MqttProvider>(
           builder: (context, mqttProvider, child) => ElevatedButton(
               onPressed: () {
                 mqttProvider.addStringToQueue("Waits for Connected...");
                 SensorMqtt.connect(mqttProvider.getTopic(), mqttProvider.getMqttHostName(),
-                        mqttProvider.getMqttPort(),context)
+                        mqttProvider.getMqttPort(),context,mqttProvider)
                     .then((clientReturned) {
-                  mqttProvider.manageMqttClient(clientReturned);
+                  mqttProvider.manageMqttClient(clientReturned); //return 된 client를 프로바이더로 관리한다.
                 }, onError: (e) {
                   mqttProvider.addStringToQueue("error");
                 });
-                mqttProvider.addStringToQueue("Successfully Connected");
               },
               child: Text("Connect")),
         ),
@@ -103,8 +111,7 @@ class Buttons extends StatelessWidget {
           builder: (context, mqttProvider, child) => ElevatedButton(
             child: Text('Publish message'),
             onPressed: () => {
-              _publish('Hello World!', mqttProvider.getMqttClient()),
-              mqttProvider.addStringToQueue("pub to ${mqttProvider.getTopic()} topic"),
+              _publish(mqttProvider.getTopic(), mqttProvider.getMqttClient(), mqttProvider),
             },
           ),
         ),

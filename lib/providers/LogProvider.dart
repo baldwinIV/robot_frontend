@@ -7,7 +7,7 @@ class LogProvider with ChangeNotifier {
   int getLength() => _data.length;
   Queue<String> getData() => _data;
   void addStringToQueue(String toAdd) {
-    if(_data.length >= 10){
+    if(_data.length >= 100){
       _data.removeFirst();
     }
    _data.addLast(toAdd);

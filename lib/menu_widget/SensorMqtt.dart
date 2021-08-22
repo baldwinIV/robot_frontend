@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'dart:async';
@@ -6,20 +7,17 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:robot_frontend/menu_widget/sensorMqttComponent/SensorMqttComponent.dart';
 import 'package:robot_frontend/providers/MqttProvider.dart';
 
-
- class SensorMqtt extends StatelessWidget {
+class SensorMqtt extends StatelessWidget {
   SensorMqtt({
     Key? key,
     required this.title,
   }) : super(key: key);
   final String title;
 
-  static Future<MqttBrowserClient> connect(
-      String topic, String host, String port,BuildContext context) async {
-
-    print("before connected topic? $topic");
+  static Future<MqttBrowserClient> connect(String topic, String host,
+      String port, BuildContext context, MqttProvider mqttProvider) async {
     MqttBrowserClient client =
-    MqttBrowserClient.withPort(host, 'flutter_client', int.parse(port));
+        MqttBrowserClient.withPort(host, 'flutter_client', int.parse(port));
     client.logging(on: false);
     client.onConnected = onConnected;
     client.onDisconnected = onDisconnected;
@@ -39,20 +37,20 @@ import 'package:robot_frontend/providers/MqttProvider.dart';
     client.connectionMessage = connMess;
     try {
       print('Connecting');
+      mqttProvider.addStringToQueue("try to connect.");
       //await client.connect();
       await client.connect("sherofirstprize", "\$\$ManyMany100");
     } catch (e) {
       print('Exception: $e');
       client.disconnect();
     } // Not a wildcard topic
-    //client.subscribe(topic, MqttQos.atLeastOnce);
+    mqttProvider.addStringToQueue("connected");
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       final recMess = c![0].payload as MqttPublishMessage;
       final pt =
-      MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-      print(
-          'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
-      print('');
+          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      mqttProvider.addStringToQueue(
+          'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload : <-- $pt -->');
     });
     client.published!.listen((MqttPublishMessage message) {
       print(
@@ -63,36 +61,45 @@ import 'package:robot_frontend/providers/MqttProvider.dart';
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      child: SafeArea(
-        child: Row(
-          //mainAxisAlignment: MainAxisAlignment.center,
+    return Expanded(
+      flex: 1,
+      child: Column(
+          children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               child: InputClasses(),
-              padding: EdgeInsets.fromLTRB(100, 0, 0, 0),
             ),
             Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
                   child: Buttons(),
-                ),
-                SafeArea(
-                  child: Container(
-                    child: SizedBox(
-                      child: LogList(),
-                      width: 250,
-                      height: 500,
-                    ),
-                  ),
                 ),
               ],
             ),
           ],
         ),
-      ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 1,
+                  color: Colors.black,
+                ),
+                color: Color(0xff323844),
+              ),
+              child: SizedBox(
+                child: LogList(),
+                width: 500,
+                height: 500,
+              ),
+            ),
+          ],
+        ),
+      ]),
     );
   }
 }
