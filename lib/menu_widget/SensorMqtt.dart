@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:robot_frontend/menu_widget/sensorMqttComponent/SensorMqttComponent.dart';
 import 'package:robot_frontend/providers/MqttProvider.dart';
-
 class SensorMqtt extends StatelessWidget {
   SensorMqtt({
     Key? key,
@@ -45,18 +44,35 @@ class SensorMqtt extends StatelessWidget {
       client.disconnect();
     } // Not a wildcard topic
     mqttProvider.addStringToQueue("connected");
+
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       final recMess = c![0].payload as MqttPublishMessage;
       final pt =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       mqttProvider.addStringToQueue(
           'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload : <-- $pt -->');
+      dashboardUpdate(c[0].topic,pt,mqttProvider);
     });
     client.published!.listen((MqttPublishMessage message) {
       print(
           'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
     });
+    client.subscribe("24hours_data_answer", MqttQos.atLeastOnce);
+    client.subscribe("7days_data_answer", MqttQos.atLeastOnce);
+    client.subscribe("image_answer", MqttQos.atLeastOnce);
+    //--24시간 데이터 요청
     return client;
+  }
+  static void dashboardUpdate(String topic, String payload, MqttProvider mqttProvider){
+    if(topic == "image_answer"){
+      // mqttProvider.manageImage(payload);
+    }else if(topic == "7days_data_answer"){
+      mqttProvider.addStringToQueue("7days_data_answer를 받았다!");
+      mqttProvider.manage7days(payload);
+    }else if(topic == "24hours_data_answer"){
+      mqttProvider.addStringToQueue("24hours_data_answer를 받았다!");
+      mqttProvider.manage24hours(payload);
+    }
   }
 
   @override

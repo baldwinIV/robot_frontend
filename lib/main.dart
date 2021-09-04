@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(
               create: (context) => SwitchProvider('default')),
           ChangeNotifierProvider(create: (context) => MqttProvider('/test')),
-          ChangeNotifierProvider(create: (context) => LogProvider())
+          ChangeNotifierProvider(create: (context) => LogProvider()),
         ],
         child: MaterialApp(
           title: 'mainpagedefault',
