@@ -3,7 +3,7 @@
 /// type : "Default"
 
 class DataFromClient {
-  Main _main = Main.origin(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
+  Main _main = Main.origin(10, 10, 10, 10, 10,10, 10, 10, 10, 10, 10, 10);
   int _possible = 0;
   String _type = 'default';
 
@@ -14,12 +14,13 @@ class DataFromClient {
   String get type => _type;
 
   DataFromClient(int possible, String type) {
-    _main = Main.origin(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
+    _main = Main.origin(10, 10, 10, 10, 10,10, 10, 10, 10, 10, 10, 10);
     _possible = possible;
     _type = type;
   }
 
   DataFromClient.fromJson(dynamic json) {
+    print("1단계");
     _main = Main.fromJson(json['main']);
     _possible = json['possible'];
     _type = json['type'];
@@ -48,18 +49,18 @@ class DataFromClient {
 /// Hour12 : 1.0
 
 class Main {
-  double _hour1 = -1;
-  double _hour2 = -1;
-  double _hour3 = -1;
-  double _hour4 = -1;
-  double _hour5 = -1;
-  double _hour6 = -1;
-  double _hour7 = -1;
-  double _hour8 = -1;
-  double _hour9 = -1;
-  double _hour10 = -1;
-  double _hour11 = -1;
-  double _hour12 = -1;
+  double _hour1 = 10;
+  double _hour2 = 10;
+  double _hour3 = 10;
+  double _hour4 = 10;
+  double _hour5 = 10;
+  double _hour6 = 10;
+  double _hour7 = 10;
+  double _hour8 = 10;
+  double _hour9 = 10;
+  double _hour10 = 10;
+  double _hour11 = 10;
+  double _hour12 = 10;
 
   double get hour1 => _hour1;
 
