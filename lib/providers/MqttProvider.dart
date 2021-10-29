@@ -1,39 +1,63 @@
 import 'package:flutter/cupertino.dart';
+import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'dart:collection';
 import 'dart:convert';
 import 'package:robot_frontend/providers/data_from_client.dart';
+import 'package:robot_frontend/providers/data_from_client_7.dart';
+import 'package:robot_frontend/providers/data_from_client_image.dart';
+import 'package:robot_frontend/providers/data_from_client_torobot.dart';
 
 class MqttProvider with ChangeNotifier {
   MqttBrowserClient? _mqttClient;
   String _topic;
-  String _mqttHostName = "ws://test.mosquitto.org";
+  String _mqttHostName = "ws://61.83.204.205";
   String _mqttPort = "8080";
+  String _base64String_map1 =
+      "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+  String _base64String_map2 =
+      "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
 
-  DataFromClient _temp_24 = DataFromClient(1, "default");
   DataFromClient gettemp_24() => _temp_24;
-  DataFromClient _temp_7 = DataFromClient(1, "default");
-  DataFromClient gettemp_7() => _temp_7;
-  DataFromClient _hum_24 = DataFromClient(1, "default");
-  DataFromClient gethum_24() => _hum_24;
-  DataFromClient _hum_7 = DataFromClient(1, "default");
-  DataFromClient gethum_7() => _hum_7;
-  DataFromClient _CO2_24 = DataFromClient(1, "default");
+  DataFromClient _temp_24 = DataFromClient(1, "default");
+
   DataFromClient getCO2_24() => _CO2_24;
-  DataFromClient _CO2_7 = DataFromClient(1, "default");
-  DataFromClient getCO2_7() => _CO2_7;
-  DataFromClient _VOC_24 = DataFromClient(1, "default");
+  DataFromClient _CO2_24 = DataFromClient(1, "default");
+
+  DataFromClient gethum_24() => _hum_24;
+  DataFromClient _hum_24 = DataFromClient(1, "default");
+
   DataFromClient getVOC_24() => _VOC_24;
-  DataFromClient _VOC_7 = DataFromClient(1, "default");
-  DataFromClient getVOC_7() => _VOC_7;
-  DataFromClient _pm10_24 = DataFromClient(1, "default");
+  DataFromClient _VOC_24 = DataFromClient(1, "default");
+
   DataFromClient getpm10_24() => _pm10_24;
-  DataFromClient _pm10_7 = DataFromClient(1, "default");
-  DataFromClient getpm10_7() => _pm10_7;
-  DataFromClient _pm2_24 = DataFromClient(1, "default");
+  DataFromClient _pm10_24 = DataFromClient(1, "default");
+
   DataFromClient getpm2_24() => _pm2_24;
-  DataFromClient _pm2_7 = DataFromClient(1, "default");
-  DataFromClient getpm2_7() => _pm2_7;
+  DataFromClient _pm2_24 = DataFromClient(1, "default");
+
+  DataFromClient7 gettemp_7() => _temp_7;
+  DataFromClient7 _temp_7 = DataFromClient7(1, "default");
+
+  DataFromClient7 getCO2_7() => _CO2_7;
+  DataFromClient7 _CO2_7 = DataFromClient7(1, "default");
+
+  DataFromClient7 gethum_7() => _hum_7;
+  DataFromClient7 _hum_7 = DataFromClient7(1, "default");
+
+  DataFromClient7 getVOC_7() => _VOC_7;
+  DataFromClient7 _VOC_7 = DataFromClient7(1, "default");
+
+  DataFromClient7 getpm10_7() => _pm10_7;
+  DataFromClient7 _pm10_7 = DataFromClient7(1, "default");
+
+  DataFromClient7 getpm2_7() => _pm2_7;
+  DataFromClient7 _pm2_7 = DataFromClient7(1, "default");
+
+  DataFromClientImage getdataImage() => _dataImage;
+  DataFromClientImage _dataImage = DataFromClientImage(
+      "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
+      1);
 
   var hostController = TextEditingController();
   var portController = TextEditingController();
@@ -51,6 +75,10 @@ class MqttProvider with ChangeNotifier {
   String getMqttHostName() => _mqttHostName;
 
   String getMqttPort() => _mqttPort;
+
+  String getBase64Map1() => _base64String_map1;
+
+  String getBase64Map2() => _base64String_map2;
 
   TextEditingController getHostController() => hostController;
 
@@ -80,23 +108,26 @@ class MqttProvider with ChangeNotifier {
   void manage24hours(String data24hours) {
     Map<String, dynamic> jsonData = jsonDecode(data24hours);
     if (jsonData['type'] == "temp") {
-      print("12");
+      print("24hour의 temp가 업데이트");
       _temp_24 = DataFromClient.fromJson(jsonData);
+      print("24hour의 temp가 업데이트~~");
     } else if (jsonData['type'] == "hum") {
-      print("1");
+      print("24hour의 hum 업데이트");
       _hum_24 = DataFromClient.fromJson(jsonData);
     } else if (jsonData['type'] == "co2") {
-      print("1");
+      print("24hour의 co2 업데이트");
       _CO2_24 = DataFromClient.fromJson(jsonData);
     } else if (jsonData['type'] == "voc") {
-      print("1");
+      print("24hour의 voc 업데이트");
       _VOC_24 = DataFromClient.fromJson(jsonData);
     } else if (jsonData['type'] == "pm10") {
-      print("1");
+      print("24hour의 pm10 업데이트");
       _pm10_24 = DataFromClient.fromJson(jsonData);
     } else if (jsonData['type'] == "pm2") {
-      print("1");
+      print("24hour의 pm2 업데이트");
       _pm2_24 = DataFromClient.fromJson(jsonData);
+    } else {
+      print("asdfasdfasdfasdfasdfasdfasdfasdfasdf");
     }
 
     notifyListeners();
@@ -105,34 +136,41 @@ class MqttProvider with ChangeNotifier {
   void manage7days(String data7days) {
     Map<String, dynamic> jsonData = jsonDecode(data7days);
     if (jsonData['type'] == "temp") {
-      _temp_7 = DataFromClient.fromJson(jsonData);
+      _temp_7 = DataFromClient7.fromJson(jsonData);
     } else if (jsonData['type'] == "hum") {
-      _hum_7 = DataFromClient.fromJson(jsonData);
+      _hum_7 = DataFromClient7.fromJson(jsonData);
     } else if (jsonData['type'] == "co2") {
-      _CO2_7 = DataFromClient.fromJson(jsonData);
+      _CO2_7 = DataFromClient7.fromJson(jsonData);
     } else if (jsonData['type'] == "voc") {
-      _VOC_7 = DataFromClient.fromJson(jsonData);
+      _VOC_7 = DataFromClient7.fromJson(jsonData);
     } else if (jsonData['type'] == "pm10") {
-      _pm10_7 = DataFromClient.fromJson(jsonData);
+      _pm10_7 = DataFromClient7.fromJson(jsonData);
     } else if (jsonData['type'] == "pm2") {
-      _pm2_7 = DataFromClient.fromJson(jsonData);
+      _pm2_7 = DataFromClient7.fromJson(jsonData);
     }
 
     notifyListeners();
   }
 
-  // void manageImage(String imageAnswer) {
-  //   _imageAnswer = imageAnswer;
-  //   notifyListeners();
-  // }
+  void manageimage(String dataImage) {
+    Map<String, dynamic> jsonData = jsonDecode(dataImage);
+    _dataImage = DataFromClientImage.fromJson(jsonData);
+    notifyListeners();
+  }
 
-  // void manage24hoursdata(String imageAnswer) {
-  //   _imageAnswer = imageAnswer;
-  //   notifyListeners();
-  // }
 
   void manageMqttClient(MqttBrowserClient mqttClient) {
     _mqttClient = mqttClient;
+    notifyListeners();
+  }
+
+  void manageBASE64map1(String map1) {
+    _base64String_map1 = map1;
+    notifyListeners();
+  }
+
+  void manageBASE64map2(String map2) {
+    _base64String_map2 = map2;
     notifyListeners();
   }
 

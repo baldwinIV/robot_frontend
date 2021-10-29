@@ -21,7 +21,7 @@ class Menu extends StatelessWidget {
                 color: Colors.white,
               ),
               title: Text(
-                "Hello S-HERO",
+                "Robot Control App",
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -39,14 +39,14 @@ class Menu extends StatelessWidget {
             ),
             Consumer<SwitchProvider>(
               builder: (context, spProvider, child) => DrawerListTile(
-                title: "View Parsed Map",
-                press: () => {spProvider.manageData("ParsedMap")},
+                title: "Image",
+                press: () => {spProvider.manageData("Image")},
               ),
             ),
             Consumer<SwitchProvider>(
               builder: (context, spProvider, child) => DrawerListTile(
-                title: "History",
-                press: () => {spProvider.manageData("History")},
+                title: "Robot Control",
+                press: () => {spProvider.manageData("Robot_Control")},
               ),
             ),
             Consumer<SwitchProvider>(

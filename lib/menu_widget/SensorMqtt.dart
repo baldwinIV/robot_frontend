@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'dart:async';
-import 'package:provider/provider.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:robot_frontend/menu_widget/sensorMqttComponent/SensorMqttComponent.dart';
 import 'package:robot_frontend/providers/MqttProvider.dart';
+
 class SensorMqtt extends StatelessWidget {
   SensorMqtt({
     Key? key,
@@ -15,7 +15,9 @@ class SensorMqtt extends StatelessWidget {
 
   static Future<MqttBrowserClient> connect(String topic, String host,
       String port, BuildContext context, MqttProvider mqttProvider) async {
-    MqttBrowserClient client =
+    print(host);
+    print(port);
+    final client =
         MqttBrowserClient.withPort(host, 'flutter_client', int.parse(port));
     client.logging(on: false);
     client.onConnected = onConnected;
@@ -38,20 +40,26 @@ class SensorMqtt extends StatelessWidget {
       print('Connecting');
       mqttProvider.addStringToQueue("try to connect.");
       //await client.connect();
-      await client.connect("sherofirstprize", "\$\$ManyMany100");
+      await client.connect();
     } catch (e) {
+      mqttProvider.addStringToQueue("ERROR");
       print('Exception: $e');
       client.disconnect();
     } // Not a wildcard topic
-    mqttProvider.addStringToQueue("connected");
-
+    if (client.connectionStatus!.state == MqttConnectionState.connected) {
+      mqttProvider.addStringToQueue("connected");
+    } else {
+      mqttProvider.addStringToQueue(
+          'EXAMPLE::ERROR Mosquitto client connection failed - disconnecting, status is ${client.connectionStatus}');
+      client.disconnect();
+    }
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       final recMess = c![0].payload as MqttPublishMessage;
       final pt =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       mqttProvider.addStringToQueue(
           'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload : <-- $pt -->');
-      dashboardUpdate(c[0].topic,pt,mqttProvider);
+      dashboardUpdate(c[0].topic, pt, mqttProvider);
     });
     client.published!.listen((MqttPublishMessage message) {
       print(
@@ -63,14 +71,17 @@ class SensorMqtt extends StatelessWidget {
     //--24시간 데이터 요청
     return client;
   }
-  static void dashboardUpdate(String topic, String payload, MqttProvider mqttProvider){
-    if(topic == "image_answer"){
+
+  static void dashboardUpdate(
+      String topic, String payload, MqttProvider mqttProvider) {
+    if (topic == "image_answer") {
       // mqttProvider.manageImage(payload);
-    }else if(topic == "7days_data_answer"){
+    } else if (topic == "7days_data_answer") {
       mqttProvider.addStringToQueue("7days_data_answer를 받았다!");
       mqttProvider.manage7days(payload);
-    }else if(topic == "24hours_data_answer"){
+    } else if (topic == "24hours_data_answer") {
       mqttProvider.addStringToQueue("24hours_data_answer를 받았다!");
+      print("{"+payload+"}");
       mqttProvider.manage24hours(payload);
     }
   }
@@ -79,8 +90,7 @@ class SensorMqtt extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       flex: 1,
-      child: Column(
-          children: <Widget>[
+      child: Column(children: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:robot_frontend/providers/MqttProvider.dart';
 import 'package:robot_frontend/providers/SwitchProvider.dart';
 import 'package:robot_frontend/providers/LogProvider.dart';
-
+import 'package:robot_frontend/MenuController.dart';
 void main() {
   runApp(MyApp());
 }
@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
               create: (context) => SwitchProvider('default')),
           ChangeNotifierProvider(create: (context) => MqttProvider('/test')),
           ChangeNotifierProvider(create: (context) => LogProvider()),
+          ChangeNotifierProvider(create: (context) => MenuController()),
         ],
         child: MaterialApp(
           title: 'mainpagedefault',

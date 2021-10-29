@@ -1,10 +1,8 @@
-import 'package:mqtt_client/mqtt_client.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:robot_frontend/menu_widget/SensorMqtt.dart';
-import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'package:robot_frontend/providers/MqttProvider.dart';
-
+import 'package:robot_frontend/responsive.dart';
+import 'package:robot_frontend/MenuController.dart';
 class MainBoardHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -20,6 +18,12 @@ class MainBoardHeader extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
+                    if (!Responsive.isDesktop(context))
+                      IconButton(
+                        icon: Icon(Icons.menu),
+                        onPressed: context.read<MenuController>().controlMenu,
+                      ),
+                    if (!Responsive.isMobile(context))
                     Text(
                       "DASHBOARD  ",
                       style: Theme.of(context).textTheme.headline3,
