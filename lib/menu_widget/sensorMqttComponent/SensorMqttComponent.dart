@@ -1,4 +1,5 @@
 import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:mqtt_client/mqtt_client.dart';
@@ -110,7 +111,7 @@ class Buttons extends StatelessWidget {
           builder: (context, mqttProvider, child) => ElevatedButton(
             child: Text('Publish message'),
             onPressed: () => {
-              _publish(mqttProvider.getTopic(), mqttProvider.getMqttClient(), mqttProvider),
+              _publish(mqttProvider.getTopic(), mqttProvider.getMqttClient(), mqttProvider  ),
             },
           ),
         ),
