@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mqtt_client/mqtt_browser_client.dart';
+
+// import 'package:mqtt_client/mqtt_browser_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 import 'dart:async';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:robot_frontend/menu_widget/sensorMqttComponent/SensorMqttComponent.dart';
@@ -13,12 +15,14 @@ class SensorMqtt extends StatelessWidget {
   }) : super(key: key);
   final String title;
 
-  static Future<MqttBrowserClient> connect(String topic, String host,
+  static Future<MqttServerClient> connect(String topic, String host,
       String port, BuildContext context, MqttProvider mqttProvider) async {
     print(host);
     print(port);
     final client =
-        MqttBrowserClient.withPort(host, 'flutter_client', int.parse(port));
+        MqttServerClient.withPort(host, 'flutter_client', int.parse(port));
+    print("asd");
+    client.websocketProtocols = ['mqtt'];
     client.logging(on: false);
     client.onConnected = onConnected;
     client.onDisconnected = onDisconnected;
@@ -81,7 +85,7 @@ class SensorMqtt extends StatelessWidget {
       mqttProvider.manage7days(payload);
     } else if (topic == "24hours_data_answer") {
       mqttProvider.addStringToQueue("24hours_data_answer를 받았다!");
-      print("{"+payload+"}");
+      print("{" + payload + "}");
       mqttProvider.manage24hours(payload);
     }
   }
@@ -90,42 +94,46 @@ class SensorMqtt extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       flex: 1,
-      child: Column(children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              child: InputClasses(),
-            ),
-            Column(
-              children: [
-                Container(
-                  child: Buttons(),
-                ),
-              ],
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 1,
-                  color: Colors.black,
-                ),
-                color: Color(0xff323844),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                child: InputClasses(),
               ),
-              child: SizedBox(
-                child: LogList(),
-                width: 500,
-                height: 500,
+              Column(
+                children: [
+                  Container(
+                    child: Buttons(),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      ]),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.black,
+                  ),
+                  color: Color(0xff323844),
+                ),
+                child: SizedBox(
+                  child: LogList(),
+                  width: 500,
+                  height: 500,
+                ),
+              ),
+            ],
+          ),
+        ]),
+      ), //sdasdsad
     );
   }
 }

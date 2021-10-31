@@ -3,7 +3,8 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_browser_client.dart';
+// import 'package:mqtt_client/mqtt_browser_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:robot_frontend/menu_widget/SensorMqtt.dart';
 import 'package:robot_frontend/providers/MqttProvider.dart';
 
@@ -50,7 +51,7 @@ class InputClasses extends StatelessWidget {
   }
 }
 
-void _publish(String topic, MqttBrowserClient? _client, MqttProvider mqttProvider) {
+void _publish(String topic, MqttServerClient? _client, MqttProvider mqttProvider) {
   final builder = MqttClientPayloadBuilder();
   builder.addUTF8String('Hello from flutter_client');
   _client!.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
@@ -102,7 +103,7 @@ class Buttons extends StatelessWidget {
                     .then((clientReturned) {
                   mqttProvider.manageMqttClient(clientReturned); //return 된 client를 프로바이더로 관리한다.
                 }, onError: (e) {
-                  mqttProvider.addStringToQueue("error");
+                  mqttProvider.addStringToQueue("erasror");
                 });
               },
               child: Text("Connect")),

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_browser_client.dart';
+// import 'package:mqtt_client/mqtt_browser_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 import 'dart:collection';
 import 'dart:convert';
 import 'package:robot_frontend/providers/data_from_client.dart';
@@ -9,10 +10,10 @@ import 'package:robot_frontend/providers/data_from_client_image.dart';
 import 'package:robot_frontend/providers/data_from_client_torobot.dart';
 
 class MqttProvider with ChangeNotifier {
-  MqttBrowserClient? _mqttClient;
+  MqttServerClient? _mqttClient;
   String _topic;
-  String _mqttHostName = "ws://61.83.204.205";
-  String _mqttPort = "8080";
+  String _mqttHostName = "61.83.204.205";
+  String _mqttPort = "1883";
   String _base64String_map1 =
       "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
   String _base64String_map2 =
@@ -68,7 +69,7 @@ class MqttProvider with ChangeNotifier {
 
   Queue<String> getData() => _data;
 
-  MqttBrowserClient? getMqttClient() => _mqttClient;
+  MqttServerClient? getMqttClient() => _mqttClient;
 
   String getTopic() => _topic;
 
@@ -159,7 +160,7 @@ class MqttProvider with ChangeNotifier {
   }
 
 
-  void manageMqttClient(MqttBrowserClient mqttClient) {
+  void manageMqttClient(MqttServerClient mqttClient) {
     _mqttClient = mqttClient;
     notifyListeners();
   }

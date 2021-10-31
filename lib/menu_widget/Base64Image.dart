@@ -4,7 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_browser_client.dart';
+// import 'package:mqtt_client/mqtt_browser_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:robot_frontend/providers/MqttProvider.dart';
 import 'package:robot_frontend/providers/data_from_client_torobot.dart';
 import 'package:robot_frontend/providers/data_from_client_image.dart';
@@ -42,7 +43,7 @@ Consumer<MqttProvider> mapComponent(String _base64) {
     ),
   );
 }
-void _publish(String topic, MqttBrowserClient? _client, MqttProvider mqttProvider,String message) {
+void _publish(String topic, MqttServerClient? _client, MqttProvider mqttProvider,String message) {
   final builder = MqttClientPayloadBuilder();
   builder.addUTF8String(message);
   _client!.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
